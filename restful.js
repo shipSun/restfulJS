@@ -1,12 +1,17 @@
 /**
  * @author shipSun
  */
+function successHandle(data){
+	$.restful.isLoginHandle(data);
+	$.restful.success(data);
+}
 function RestFul(){
 	this.type="get";
 	this.url="";
 	this.data="";
 	this.async=true;
-	
+	this.debug = false;
+
 	this.ajax=function(){
 		$.ajax({
 			"type":this.type,
@@ -15,32 +20,49 @@ function RestFul(){
 			"cache":true,
 			"complete":this.complete,
 			"error":this.error,
-			"success":this.success,
+			"success":successHandle,
 			"contentType":"application/x-www-form-urlencoded",
 			"data":this.data,
 			"dataType":"json"
 		});
 	};
-	this.complete=function($xhr, $type){
-		console.log('执行完成');
-		console.log($xhr);
-		console.log($type)
+	this.complete=function(xhr, type){
+		if(this.debug) {
+            console.log('执行完成', xhr, type);
+        }
 	};
-	this.error=function($xhr,$errStr){
-		console.error($xhr);
-		console.error($errStr);
-		alert($errStr);
+	this.error=function(xhr,errStr){
+        if(this.debug) {
+            console.error('出错', xhr, errStr);
+        }
+		alert(errStr);
 	};
-	this.success=function($data){
-		console.log($data);
-	};
+    this.success = function(data){
+        if(this.debug) {
+            console.log('执行成功', data);
+        }
+    }
+    this.isLoginHandle = function(data){
+        if(this.debug) {
+            console.error('登录失败', data);
+
+        }else{
+            if(data.code==401){
+            	window.location.href=data.url;
+            }
+		}
+    }
 }
-RestFul.prototype.init = function(config={}){
+RestFul.prototype.init = function(config){
 	if(config.async!==undefined){
 		this.async = config.async;
 	}
+	if(config.debug!==undefined){
+		this.debug = config.debug;
+	}
+	return this;
 }
-RestFul.prototype.post = function(url, data=null, success=false, error=false, complete=false){
+RestFul.prototype.post = function(url, data, success, error, complete){
 	this.url=url;
 	this.data=data;
 	this.type='POST';
@@ -55,7 +77,7 @@ RestFul.prototype.post = function(url, data=null, success=false, error=false, co
 	}
 	this.ajax();
 };
-RestFul.prototype.get = function(url, data=null, success=false, error=false, complete=false){
+RestFul.prototype.get = function(url, data, success, error, complete){
 	this.url=url;
 	this.data=data;
 	this.type='GET';
@@ -70,7 +92,7 @@ RestFul.prototype.get = function(url, data=null, success=false, error=false, com
 	}
 	this.ajax();
 };
-RestFul.prototype.put = function(url, data=null, success=false, error=false, complete=false){
+RestFul.prototype.put = function(url, data, success, error, complete){
 	this.url=url;
 	this.data=data;
 	this.type='PUT';
@@ -85,7 +107,7 @@ RestFul.prototype.put = function(url, data=null, success=false, error=false, com
 	}
 	this.ajax();
 };
-RestFul.prototype.del = function(url, data=null, success=false, error=false, complete=false){
+RestFul.prototype.del = function(url, data, success, error, complete){
 	this.url=url;
 	this.data=data;
 	this.type='DELETE';
@@ -100,4 +122,4 @@ RestFul.prototype.del = function(url, data=null, success=false, error=false, com
 	}
 	this.ajax();
 };
-jQuery.restful=new RestFul();
+jQuery.restful = new RestFul().init({});
