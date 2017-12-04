@@ -55,9 +55,9 @@ RestFul.prototype.post = function(url, data, successe, error, complete){
 	}
 	this.ajax();
 };
-RestFul.prototype.get = function(url, data, successe, error, complete){
+RestFul.prototype.get = function(url, successe, error, complete){
 	this.url=url;
-	this.data=data;
+	this.data='';
 	this.type='GET';
 	if(success){
 		this.success=success;
@@ -85,9 +85,9 @@ RestFul.prototype.put = function(url, data, successe, error, complete){
 	}
 	this.ajax();
 };
-RestFul.prototype.del = function(url, data, successe, error, complete){
+RestFul.prototype.del = function(url, successe, error, complete){
 	this.url=url;
-	this.data=data;
+	this.data='';
 	this.type='DELETE';
 	if(success){
 		this.success=success;
